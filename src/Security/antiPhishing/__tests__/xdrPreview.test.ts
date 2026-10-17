@@ -59,7 +59,7 @@ describe("Anti-Phishing XDR Preview", () => {
   it("renders full 56-character destination addresses to prevent truncation attacks", () => {
     const tx = new TransactionBuilder(account, { fee: "100", networkPassphrase: Networks.TESTNET })
       .addOperation(Operation.payment({
-        destination: "GBB4VUKIQJTXQWGIXM5BBV2372PDU3Z6ZXY525RKV63EUPW4ZMY4T6XU",
+        destination: destKey,
         asset: Asset.native(),
         amount: "50.0"
       }))
@@ -69,7 +69,7 @@ describe("Anti-Phishing XDR Preview", () => {
     const result = renderTransactionPreview(tx.toEnvelope().toXDR("base64"));
     expect(result.safe).toBe(true);
     // Mathematically assert that the full 56-character address is rendered, not a sliced version
-    expect(result.message).toContain("GBB4VUKIQJTXQWGIXM5BBV2372PDU3Z6ZXY525RKV63EUPW4ZMY4T6XU");
-    expect(result.message).not.toMatch(/GBB4\.\.\.T6XU/);
+    expect(result.message).toContain(destKey);
+    expect(result.message).not.toMatch(/[A-Z0-9]{4}\.\.\.[A-Z0-9]{4}/);
   });
 });
